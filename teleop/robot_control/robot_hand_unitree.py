@@ -407,8 +407,11 @@ if __name__ == "__main__":
         # 'head_camera_type': 'realsense',
         # 'head_camera_image_shape': [720, 1280],  # Head camera resolution
         # 'head_camera_id_numbers': ["250122076427"],
-        'head_camera_type': 'zed',
-        'head_camera_image_shape': [720, 1280],  # Head camera resolution
+        # 'head_camera_type': 'zed',
+        # 'head_camera_image_shape': [720, 1280],  # Head camera resolution
+        'head_camera_type': 'opencv',
+        'head_camera_image_shape': [480, 1280],  # Head camera resolution
+        'head_camera_id_numbers': [2],
     }
     ASPECT_RATIO_THRESHOLD = 2.0  # If the aspect ratio exceeds this value, it is considered binocular
     if len(img_config['head_camera_id_numbers']) > 1 or (img_config['head_camera_image_shape'][1] / img_config['head_camera_image_shape'][0] > ASPECT_RATIO_THRESHOLD):

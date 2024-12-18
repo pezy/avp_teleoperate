@@ -108,24 +108,33 @@ class TeleVision:
     async def main_image_monocular(self, session, fps=60):
         session.upsert @ Hands(fps=fps, stream=True, key="hands", showLeft=True, showRight=True)
         while True:
-            display_image = cv2.cvtColor(self.img_array, cv2.COLOR_BGR2RGB)
+            t1 = time.time()
+            # display_image = cv2.cvtColor(self.img_array, cv2.COLOR_BGR2RGB)
             # aspect_ratio = self.img_width / self.img_height
             session.upsert(
                 [
                     ImageBackground(
-                        display_image,
+                        self.img_array,
                         aspect=1.778,
                         height=1,
                         distanceToCamera=1,
                         format="jpeg",
-                        quality=50,
+                        quality=30,
                         key="background-mono",
                         interpolate=True,
                     ),
                 ],
                 to="bgChildren",
             )
-            await asyncio.sleep(0.016)
+            
+            elapsed = time.time() - t1
+            sleep_time = max(0, 0.016 - elapsed)
+            await asyncio.sleep(sleep_time)
+            
+            # print(f"Process time: {elapsed*1000:.1f}ms")
+            # print(f"Sleep time: {sleep_time*1000:.1f}ms")
+            # print(f"Total frame: {(time.time() - t1)*1000:.1f}ms")
+            # print("---")
 
     @property
     def left_hand(self):
@@ -163,15 +172,15 @@ if __name__ == '__main__':
     from image_server.image_client import ImageClient
 
     # image
-    img_shape = (720, 640 * 2, 3)
+    img_shape = (480, 640, 3)
     img_shm = shared_memory.SharedMemory(create=True, size=np.prod(img_shape) * np.uint8().itemsize)
     img_array = np.ndarray(img_shape, dtype=np.uint8, buffer=img_shm.buf)
-    img_client = ImageClient(tv_img_shape = img_shape, tv_img_shm_name = img_shm.name)
+    img_client = ImageClient(tv_img_shape = img_shape, tv_img_shm_name = img_shm.name, server_address="127.0.0.1")
     image_receive_thread = threading.Thread(target=img_client.receive_process, daemon=True)
     image_receive_thread.start()
 
     # television
-    tv = TeleVision(True, img_shape, img_shm.name)
+    tv = TeleVision(False, img_shape, img_shm.name)
     print("vuer unit test program running...")
     print("you can press ^C to interrupt program.")
     while True:
