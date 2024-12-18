@@ -5,10 +5,59 @@ import struct
 from collections import deque
 import numpy as np
 import pyrealsense2 as rs
+import pyzed.sl as sl
+
+
+class ZedCamera(object):
+    def __init__(self, img_shape, fps=15) -> None:
+        """
+        img_shape: [height, width]
+        fps: frame per second
+        """
+        self.img_shape = img_shape
+        self.fps = fps
+
+        self.init_zed()
+
+    def init_zed(self):
+        self.zed = sl.Camera()
+        init_params = sl.InitParameters()
+        init_params.camera_resolution = sl.RESOLUTION.HD720
+        init_params.camera_fps = self.fps
+        err = self.zed.open(init_params)
+        if err != sl.ERROR_CODE.SUCCESS:
+            print(f"[Image Server] Zed camera open failed, error code: {err}")
+            return
+        
+    def release(self):
+        self.zed.close()
+
+    def get_frame(self):
+        # Create Mat object for left image
+        image_left = sl.Mat()
+        # image_right = sl.Mat()  # Temporarily commented out
+        
+        # Grab new frame
+        if self.zed.grab() == sl.ERROR_CODE.SUCCESS:
+            # Retrieve left image only
+            self.zed.retrieve_image(image_left, sl.VIEW.LEFT)
+            # self.zed.retrieve_image(image_right, sl.VIEW.RIGHT)  # Temporarily commented out
+            
+            # Convert to numpy array
+            left_array = image_left.get_data()
+            # right_array = image_right.get_data()  # Temporarily commented out
+            # combined_bgr = np.hstack((left_array, right_array))  # Temporarily commented out
+            
+            # Convert from BGR to RGB if needed
+            # combined_rgb = cv2.cvtColor(combined_bgr, cv2.COLOR_BGR2RGB)
+            
+            return left_array
+        
+        return None
 
 
 class RealSenseCamera(object):
-    def __init__(self, img_shape, fps, serial_number=None, enable_depth=False) -> None:
+    def __init__(self, img_shape, fps, serial_number=None, enable_depth=True) -> None:
         """
         img_shape: [height, width]
         serial_number: serial number
@@ -137,6 +186,10 @@ class ImageServer:
             for serial_number in self.head_camera_id_numbers:
                 camera = RealSenseCamera(img_shape=self.head_image_shape, fps=self.fps, serial_number=serial_number)
                 self.head_cameras.append(camera)
+        elif self.head_camera_type == 'zed':
+            for serial_number in self.head_camera_id_numbers:
+                camera = ZedCamera(img_shape=self.head_image_shape, fps=self.fps)
+                self.head_cameras.append(camera)
         else:
             print(f"[Image Server] Unsupported head_camera_type: {self.head_camera_type}")
 
@@ -227,6 +280,11 @@ class ImageServer:
                         if color_image is None:
                             print("[Image Server] Head camera frame read is error.")
                             break
+                    elif self.head_camera_type == 'zed':
+                        color_image = cam.get_frame()
+                        if color_image is None:
+                            print("[Image Server] Head camera frame read is error.")
+                            break
                     head_frames.append(color_image)
                 if len(head_frames) != len(self.head_cameras):
                     break
@@ -283,13 +341,15 @@ class ImageServer:
 
 if __name__ == "__main__":
     config = {
-        'fps': 30,
-        'head_camera_type': 'opencv',
-        'head_camera_image_shape': [480, 1280],  # Head camera resolution
-        'head_camera_id_numbers': [0],
-        'wrist_camera_type': 'opencv',
-        'wrist_camera_image_shape': [480, 640],  # Wrist camera resolution
-        'wrist_camera_id_numbers': [2, 4],
+        'fps': 15,
+        # 'head_camera_type': 'realsense',
+        # 'head_camera_image_shape': [720, 1280],  # Head camera resolution
+        # 'head_camera_id_numbers': ["250122076427"],
+        'head_camera_type': 'zed',
+        'head_camera_image_shape': [720, 1280],  # Head camera resolution
+        # 'wrist_camera_type': 'opencv',
+        # 'wrist_camera_image_shape': [480, 640],  # Wrist camera resolution
+        # 'wrist_camera_id_numbers': [2, 4],
     }
 
     server = ImageServer(config, Unit_Test=False)

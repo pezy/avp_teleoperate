@@ -68,7 +68,7 @@ class TeleVision:
             pass
     
     async def main_image_binocular(self, session, fps=60):
-        session.upsert @ Hands(fps=fps, stream=True, key="hands", showLeft=False, showRight=False)
+        session.upsert @ Hands(fps=fps, stream=True, key="hands", showLeft=True, showRight=True)
         while True:
             display_image = cv2.cvtColor(self.img_array, cv2.COLOR_BGR2RGB)
             # aspect_ratio = self.img_width / self.img_height
@@ -106,7 +106,7 @@ class TeleVision:
             await asyncio.sleep(0.016 * 2)
 
     async def main_image_monocular(self, session, fps=60):
-        session.upsert @ Hands(fps=fps, stream=True, key="hands", showLeft=False, showRight=False)
+        session.upsert @ Hands(fps=fps, stream=True, key="hands", showLeft=True, showRight=True)
         while True:
             display_image = cv2.cvtColor(self.img_array, cv2.COLOR_BGR2RGB)
             # aspect_ratio = self.img_width / self.img_height
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     from image_server.image_client import ImageClient
 
     # image
-    img_shape = (480, 640 * 2, 3)
+    img_shape = (720, 640 * 2, 3)
     img_shm = shared_memory.SharedMemory(create=True, size=np.prod(img_shape) * np.uint8().itemsize)
     img_array = np.ndarray(img_shape, dtype=np.uint8, buffer=img_shm.buf)
     img_client = ImageClient(tv_img_shape = img_shape, tv_img_shm_name = img_shm.name)
