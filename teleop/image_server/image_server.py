@@ -146,9 +146,10 @@ class OpenCVCamera():
         if not ret:
             return None
         
-        left_image = color_image[:, :self.img_shape[1]//2]
-        left_image = cv2.cvtColor(left_image, cv2.COLOR_BGR2RGB)
-        return left_image
+        # left_image = color_image[:, :self.img_shape[1]//2]
+        # left_image = cv2.cvtColor(left_image, cv2.COLOR_BGR2RGB)
+        color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
+        return color_image
 
 
 class ImageServer:

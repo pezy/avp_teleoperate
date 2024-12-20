@@ -68,17 +68,17 @@ class InspireController:
         ref_left_value = left_hand_array[inspire_tip_indices]
         ref_right_value = right_hand_array[inspire_tip_indices]
 
-        print(f"ref_right_value: {ref_right_value}")
+        # print(f"ref_right_value: {ref_right_value}")
 
         left_q_target  = self.hand_retargeting.left_retargeting.retarget(ref_left_value)
         right_q_target = self.hand_retargeting.right_retargeting.retarget(ref_right_value)
 
-        print(f"right_q_target: {right_q_target}")
+        # print(f"right_q_target: {right_q_target}")
 
         left_angles = self.get_hand_angles(left_q_target)
         right_angles = self.get_hand_angles(right_q_target)
 
-        print(f"right_angles: {right_angles}")
+        # print(f"right_angles: {right_angles}")
 
         self.ctrl(left_angles, right_angles)
 
