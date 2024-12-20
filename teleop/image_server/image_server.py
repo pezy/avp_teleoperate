@@ -354,9 +354,9 @@ if __name__ == "__main__":
         # 'head_camera_id_numbers': ["250122076427"],
         # 'head_camera_type': 'zed',
         # 'head_camera_image_shape': [720, 1280],  # Head camera resolution
-        # 'wrist_camera_type': 'opencv',
-        # 'wrist_camera_image_shape': [480, 640],  # Wrist camera resolution
-        # 'wrist_camera_id_numbers': [2, 4],
+        'wrist_camera_type': 'realsense',
+        'wrist_camera_image_shape': [480, 640],  # Wrist camera resolution
+        'wrist_camera_id_numbers': ["218722271564", "218622271204"],
     }
 
     server = ImageServer(config, Unit_Test=False)
