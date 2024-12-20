@@ -173,13 +173,17 @@ class EpisodeWriter():
                 model=json.load(json_file)
         """
         # Wait for the queue to be processed
-        self.item_data_queue.join()
-        # save
-        self.data['info'] = self.info
-        self.data['text'] = self.text
-        self.data['data'] = self.episode_data
-        with open(self.json_path,'w',encoding='utf-8') as jsonf:
-            jsonf.write(json.dumps(self.data, indent=4, ensure_ascii=False))
+        try:
+            self.item_data_queue.join()
+            # save
+            self.data['info'] = self.info
+            self.data['text'] = self.text
+            self.data['data'] = self.episode_data
+            with open(self.json_path,'w',encoding='utf-8') as jsonf:
+                jsonf.write(json.dumps(self.data, indent=4, ensure_ascii=False))
+            print(f"==> Save episode to {self.json_path} ok.")
+        except Exception as e:
+            print(f"Error saving episode: {e}")
 
     def close(self):
         self.item_data_queue.join()

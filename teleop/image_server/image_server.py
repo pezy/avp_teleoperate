@@ -108,6 +108,11 @@ class RealSenseCamera(object):
         color_image = np.asanyarray(color_frame.get_data())
         # color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
         depth_image = np.asanyarray(depth_frame.get_data()) if self.enable_depth else None
+
+        if self.serial_number == "218622271204":
+            color_image = cv2.rotate(color_image, cv2.ROTATE_180)
+            depth_image = cv2.rotate(depth_image, cv2.ROTATE_180)
+
         return color_image, depth_image
 
     def release(self):
@@ -348,7 +353,7 @@ if __name__ == "__main__":
         'fps': 30,
         'head_camera_type': 'opencv',
         'head_camera_image_shape': [480, 1280],  # Head camera resolution
-        'head_camera_id_numbers': [0],
+        'head_camera_id_numbers': [6],
         # 'head_camera_type': 'realsense',
         # 'head_camera_image_shape': [720, 1280],  # Head camera resolution
         # 'head_camera_id_numbers': ["250122076427"],

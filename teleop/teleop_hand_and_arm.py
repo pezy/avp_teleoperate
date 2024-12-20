@@ -161,19 +161,21 @@ if __name__ == '__main__':
                 # record data
                 if args.record:
                     # dex hand or gripper
-                    if args.dex:
-                        with dual_hand_data_lock:
-                            left_hand_state = dual_hand_state_array[:7]
-                            right_hand_state = dual_hand_state_array[-7:]
-                            left_hand_action = dual_hand_action_array[:7]
-                            right_hand_action = dual_hand_action_array[-7:]
-                    else:
-                        with dual_gripper_data_lock:
-                            left_hand_state = [dual_gripper_state_array[1]]
-                            right_hand_state = [dual_gripper_state_array[0]]
-                            left_hand_action = [dual_gripper_action_array[1]]
-                            right_hand_action = [dual_gripper_action_array[0]]
+                    # if args.dex:
+                    #     with dual_hand_data_lock:
+                    #         left_hand_state = dual_hand_state_array[:7]
+                    #         right_hand_state = dual_hand_state_array[-7:]
+                    #         left_hand_action = dual_hand_action_array[:7]
+                    #         right_hand_action = dual_hand_action_array[-7:]
+                    # else:
+                    #     with dual_gripper_data_lock:
+                    #         left_hand_state = [dual_gripper_state_array[1]]
+                    #         right_hand_state = [dual_gripper_state_array[0]]
+                    #         left_hand_action = [dual_gripper_action_array[1]]
+                    #         right_hand_action = [dual_gripper_action_array[0]]
                     # head image
+                    right_hand_state = hand_ctrl.get_right_q()
+                    left_hand_state = hand_ctrl.get_left_q()
                     current_tv_image = tv_img_array.copy()
                     # wrist image
                     if WRIST:
@@ -210,12 +212,12 @@ if __name__ == '__main__':
                                 "torque": [],                         
                             },                        
                             "left_hand": {                                                                    
-                                "qpos":   left_hand_state,           
+                                "qpos":   left_hand_state.tolist(),           
                                 "qvel":   [],                           
                                 "torque": [],                          
                             }, 
                             "right_hand": {                                                                    
-                                "qpos":   right_hand_state,       
+                                "qpos":   right_hand_state.tolist(),       
                                 "qvel":   [],                           
                                 "torque": [],  
                             }, 
@@ -233,12 +235,12 @@ if __name__ == '__main__':
                                 "torque": [],       
                             },                         
                             "left_hand": {                                   
-                                "qpos":   left_hand_action,       
+                                "qpos":   [],       
                                 "qvel":   [],       
                                 "torque": [],       
                             }, 
                             "right_hand": {                                   
-                                "qpos":   right_hand_action,       
+                                "qpos":   [],       
                                 "qvel":   [],       
                                 "torque": [], 
                             }, 
