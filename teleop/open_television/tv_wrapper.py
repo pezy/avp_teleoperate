@@ -131,8 +131,10 @@ class TeleVisionWrapper:
         #    ···
         #    [x23,y23,z23] 
         #    [x24,y24,z24]               
-        unitree_left_hand  = (T_to_unitree_hand @ left_hand_mat_wb)[0:3, :].T
-        unitree_right_hand = (T_to_unitree_hand @ right_hand_mat_wb)[0:3, :].T
+        # unitree_left_hand  = (T_to_unitree_hand @ left_hand_mat_wb)[0:3, :].T
+        # unitree_right_hand = (T_to_unitree_hand @ right_hand_mat_wb)[0:3, :].T
+        inspire_left_hand  = (T_to_inspire_hand.T @ left_hand_mat_wb)[0:3, :].T
+        inspire_right_hand = (T_to_inspire_hand.T @ right_hand_mat_wb)[0:3, :].T
 
         # --------------------------------offset-------------------------------------
 
@@ -144,4 +146,4 @@ class TeleVisionWrapper:
         unitree_left_wrist[2, 3] +=0.45
         unitree_right_wrist[2,3] +=0.45
 
-        return head_rmat, unitree_left_wrist, unitree_right_wrist, unitree_left_hand, unitree_right_hand
+        return head_rmat, unitree_left_wrist, unitree_right_wrist, inspire_left_hand, inspire_right_hand

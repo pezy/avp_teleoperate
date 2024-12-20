@@ -2,6 +2,7 @@ from dex_retargeting.retargeting_config import RetargetingConfig
 from pathlib import Path
 import yaml
 from enum import Enum
+import numpy as np
 
 class HandType(Enum):
     INSPIRE_HAND = "../assets/inspire_hand/inspire_hand.yml"
@@ -40,3 +41,17 @@ class HandRetargeting:
         except Exception as e:
             print(f"An error occurred: {e}")
             raise
+
+if __name__ == "__main__":
+    hand_retargeting = HandRetargeting(HandType.INSPIRE_HAND)
+    print(f"hand_retargeting: {dir(hand_retargeting.right_retargeting)}")
+    
+    hand_mat = [[-0.02358, 0.08363, 0.07629],
+                [-0.01324, 0.03749, 0.13984],
+                [0.01151, 0.04896, 0.13798],
+                [0.03135, 0.05602, 0.12207],
+                [0.04432, 0.05533, 0.09699]]
+    hand_mat = np.array(hand_mat)
+    print(f"hand_mat: {hand_mat}")
+    hand_q = hand_retargeting.right_retargeting.retarget(hand_mat)
+    print(f"hand_q: {hand_q}")

@@ -17,6 +17,7 @@ from teleop.robot_control.robot_arm_ik import G1_29_ArmIK
 from teleop.robot_control.robot_hand_unitree import Dex3_1_Controller, Gripper_Controller
 from teleop.image_server.image_client import ImageClient
 from teleop.utils.episode_writer import EpisodeWriter
+from teleop.robot_control.robot_hand_inspire import InspireController
 
 
 if __name__ == '__main__':
@@ -101,6 +102,9 @@ if __name__ == '__main__':
     #     dual_gripper_state_array = Array('d', 2, lock=False)   # current left, right gripper state(2) data.
     #     dual_gripper_action_array = Array('d', 2, lock=False)  # current left, right gripper action(2) data.
     #     gripper_ctrl = Gripper_Controller(left_hand_array, right_hand_array, dual_gripper_data_lock, dual_gripper_state_array, dual_gripper_action_array)
+
+    # inspire hand
+    hand_ctrl = InspireController()
     
     if args.record:
         recorder = EpisodeWriter(task_dir = args.task_dir, frequency = args.frequency, rerun_log = True)
@@ -121,7 +125,7 @@ if __name__ == '__main__':
                 # send hand skeleton data to hand_ctrl.control_process
                 # left_hand_array[:] = left_hand.flatten()
                 # right_hand_array[:] = right_hand.flatten()
-
+                hand_ctrl.process_hand_data(left_hand, right_hand)
                 # get current state data.
                 current_lr_arm_q  = arm_ctrl.get_current_dual_arm_q()
                 current_lr_arm_dq = arm_ctrl.get_current_dual_arm_dq()
